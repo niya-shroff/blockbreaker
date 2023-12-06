@@ -17,8 +17,7 @@ bool gameWon = false;
 // Paddle properties
 const int paddleSize = 4;
 int paddlePosition = 6;
-#define GES_REACTION_TIME 800
-#define GES_QUIT_TIME 1000
+#define GES_TIME 500
 
 // Ball properties
 int ballX = 2, ballY = 3;
@@ -35,8 +34,6 @@ const int blockColor = matrix.Color(255, 255, 255);
 const int clear = matrix.Color(0, 0, 0);
 
 void setup() {
-  Serial.begin(9600);
-
   // Initialize matrix
   matrix.begin();
   matrix.clear();
@@ -52,14 +49,18 @@ void setup() {
 }
 
 unsigned int lastBallDrawTime = 0;
+unsigned int paddleTime = 0;
 void loop() {
   unsigned int currentTime = millis();
 
   if (currentTime - lastBallDrawTime > BALL_SPEED) {
     drawBall();
     drawBlocks();
-    drawPaddle();
     lastBallDrawTime = currentTime;
+  }
+  if (currentTime - paddleTime > GES_TIME) {
+    drawPaddle();
+    paddleTime = currentTime;
   }
 }
 
@@ -99,16 +100,13 @@ void drawPaddle() {
     matrix.drawPixel(i, 0, paddleColor);
 }
 void updatePaddlePos() {
-  #define GES_LEFT_FLAG 4
-  #define GES_RIGHT_FLAG 8
-
   uint8_t data = 0;
   paj7620ReadReg(0x43, 1, &data);
 
-  if (data == GES_RIGHT_FLAG)
+  if (data == GES_UP_FLAG || data == GES_RIGHT_FLAG || data == GES_CLOCKWISE_FLAG || data == GES_BACKWARD_FLAG)
     if (paddlePosition < width - paddleSize)
       paddlePosition++;
-  if (data == GES_LEFT_FLAG)
+  if (data == GES_DOWN_FLAG || data == GES_LEFT_FLAG || data == GES_COUNT_CLOCKWISE_FLAG || data == GES_FORWARD_FLAG)
     if (paddlePosition > 0)
       paddlePosition--;
 }
