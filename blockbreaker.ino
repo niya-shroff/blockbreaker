@@ -17,7 +17,6 @@ bool gameWon = false;
 // Paddle properties
 const int paddleSize = 4;
 int paddlePosition = 6;
-uint8_t gesture = 0;
 #define GES_REACTION_TIME 800
 #define GES_QUIT_TIME 1000
 
@@ -58,8 +57,8 @@ void loop() {
 
   if (currentTime - lastBallDrawTime > BALL_SPEED) {
     drawBall();
-    drawPaddle();
     drawBlocks();
+    drawPaddle();
     lastBallDrawTime = currentTime;
   }
 }
@@ -100,17 +99,18 @@ void drawPaddle() {
     matrix.drawPixel(i, 0, paddleColor);
 }
 void updatePaddlePos() {
-  paj7620ReadReg(0x43, 1, &gesture);
-  if (gesture == GES_RIGHT_FLAG)
-    if (paddlePosition < width - paddleSize) {
-      Serial.println("right");
+  #define GES_LEFT_FLAG 4
+  #define GES_RIGHT_FLAG 8
+
+  uint8_t data = 0;
+  paj7620ReadReg(0x43, 1, &data);
+
+  if (data == GES_RIGHT_FLAG)
+    if (paddlePosition < width - paddleSize)
       paddlePosition++;
-    }
-    else if (gesture == GES_LEFT_FLAG)
-      if (paddlePosition > 0) {
-        Serial.println("left");
-        paddlePosition--;
-      }
+  if (data == GES_LEFT_FLAG)
+    if (paddlePosition > 0)
+      paddlePosition--;
 }
 
 void drawBlocks() {
