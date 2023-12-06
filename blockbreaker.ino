@@ -46,6 +46,10 @@ void setup() {
 
   // Initialize gesture sensor
   paj7620Init();
+
+  // Initial paddleMove Buttons
+  pinMode(34, INPUT_PULLUP);
+  pinMode(35, INPUT_PULLUP);
 }
 
 unsigned int lastBallDrawTime = 0;
@@ -107,6 +111,13 @@ void updatePaddlePos() {
     if (paddlePosition < width - paddleSize)
       paddlePosition++;
   if (data == GES_DOWN_FLAG || data == GES_LEFT_FLAG || data == GES_COUNT_CLOCKWISE_FLAG || data == GES_FORWARD_FLAG)
+    if (paddlePosition > 0)
+      paddlePosition--;
+
+  if (digitalRead(34) == LOW)
+    if (paddlePosition < width - paddleSize)
+      paddlePosition++;
+  if (digitalRead(35) == LOW)
     if (paddlePosition > 0)
       paddlePosition--;
 }
