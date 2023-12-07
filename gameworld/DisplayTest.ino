@@ -47,14 +47,5 @@ void updatedisplay() {
 }
 
 bool checkGameWon() {
-  for (int i = 0; i < width; i++) {
-    for (int j = 0; j < height; j++) {
-      if (blocks[i][j]) {
-        return false;
-      }
-    }
-  }
-  return ballY >= 0 && ballY < height && paddlePosition >= 0 && paddlePosition + paddleSize < width;
-}
-
+  return lives > 0;
 }
