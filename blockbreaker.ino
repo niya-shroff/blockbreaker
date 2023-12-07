@@ -17,7 +17,7 @@ bool gameWon = false;
 // Paddle properties
 const int paddleSize = 4;
 int paddlePosition = 6;
-#define GES_TIME 500
+#define GES_TIME 0
 
 // Ball properties
 int ballX = 2, ballY = 3;
@@ -86,6 +86,9 @@ void moveBall() {
     ballDY = -ballDY;
 
   // paddle collision
+  if (ballY == 1 && ballX >= paddlePosition && ballX <= paddlePosition + paddleSize) {
+    ballDY = -ballDY;
+  }
   if (ballY == height - 2 && ballX >= paddlePosition && ballX < paddlePosition + paddleSize)
     ballDY = -ballDY;
 
@@ -102,6 +105,7 @@ void drawPaddle() {
   updatePaddlePos();
   for (int i = paddlePosition; i < paddlePosition + paddleSize; i++)
     matrix.drawPixel(i, 0, paddleColor);
+  matrix.show();
 }
 void updatePaddlePos() {
   uint8_t data = 0;
