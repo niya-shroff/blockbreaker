@@ -33,3 +33,4 @@
 
 # Arduino build files
 \build
+\.vscode
